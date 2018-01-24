@@ -29,5 +29,8 @@ class Feed(APIView):
         return Response(serializer.data)
 
 
-def get_key(image):
-    return image.created_at
+class LikeImage(APIView):
+
+    def get(self, request, image_id, format=None):
+
+        return Response(status=200)
