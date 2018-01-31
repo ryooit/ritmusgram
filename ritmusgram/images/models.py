@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from ritmusgram.users import models as user_models
+from taggit.managers import TaggableManager
 
 # Create your models here.
 @python_2_unicode_compatible
@@ -22,6 +23,7 @@ class Image(TimeStampedModel):
     caption = models.TextField()
     creator = models.ForeignKey(
         user_models.User, null=True, related_name='images')
+    tags = TaggableManager()
 
     @property
     def like_count(self):
