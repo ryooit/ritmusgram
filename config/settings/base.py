@@ -58,6 +58,7 @@ LOCAL_APPS = [
     'ritmusgram.users.apps.UsersConfig',
     # Your stuff: custom apps go here
     'ritmusgram.images.apps.ImagesConfig',
+    'ritmusgram.notifications.apps.NotificationsConfig' # notifications app
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

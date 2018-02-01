@@ -15,6 +15,8 @@ urlpatterns = [
     # User management
     url(r'^users/', include('ritmusgram.users.urls', namespace='users')),
     url(r'^images/', include('ritmusgram.images.urls', namespace='images')),
+    url(r'^notifications/',
+        include('ritmusgram.notifications.urls', namespace='notifications')),
     url(r'^accounts/', include('allauth.urls')),
 
     # Your stuff: custom urls includes go here
