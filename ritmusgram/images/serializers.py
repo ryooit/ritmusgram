@@ -65,5 +65,6 @@ class ImageSerializer(serializers.ModelSerializer):
             'location',
             'comments',
             'like_count',
-            'creator'
+            'creator',
+            'created_at'
         )
