@@ -57,12 +57,12 @@ class UnFollowUser(APIView):
 class UserProfile(APIView):
 
     def get_user(self, username):
+
         try:
             found_user = models.User.objects.get(username=username)
             return found_user
         except models.User.DoesNotExist:
             return None
-
 
     def get(self, request, username, format=None):
 
@@ -103,7 +103,7 @@ class UserProfile(APIView):
 
             else:
 
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserFollowers(APIView):
