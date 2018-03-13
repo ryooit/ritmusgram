@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from ritmusgram.users import models as user_models
 from taggit.managers import TaggableManager
+from ritmusgram.users import models as user_models
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 # Create your models here.
 @python_2_unicode_compatible
@@ -28,6 +29,10 @@ class Image(TimeStampedModel):
     @property
     def like_count(self):
         return self.likes.all().count()
+
+    @property
+    def natural_time(self):
+        return naturaltime(self.created_at)
 
     @property
     def comment_count(self):

@@ -6,8 +6,6 @@ from ritmusgram.users import models as user_models
 from ritmusgram.users import serializers as user_serializers
 from ritmusgram.notifications import views as notification_view
 
-
-
 class Images(APIView):
 
     def get(self, request, format=None):
@@ -108,14 +106,9 @@ class UnLikeImage(APIView):
         user = request.user
 
         try:
-            found_image = models.Image.objects.get(id=image_id)
-        except models.Image.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        try:
             preexisting_like = models.Like.objects.get(
                 creator = user,
-                image = found_image
+                image = image_id
             )
             preexisting_like.delete()
 
@@ -178,13 +171,17 @@ class Search(APIView):
             images = models.Image.objects.filter(
                 tags__name__in=hashtags).distinct()
 
-            serializer = serializers.CountImageSerializer(images, many=True)
+            serializer = serializers.ImageSerializer(
+                images, many=True, context={'request': request})
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
         else:
 
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            images = models.Image.objects.all()[:20]
+            serializer = serializers.ImageSerializer(
+                images, many=True, context={'request': request})
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class ModerateComment(APIView):
 
@@ -204,7 +201,6 @@ class ModerateComment(APIView):
 class ImageDetail(APIView):
 
     def find_own_image(self, image_id, user):
-
         try:
             image = models.Image.objects.get(id=image_id, creator=user)
             return image
