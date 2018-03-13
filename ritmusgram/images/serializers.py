@@ -60,6 +60,7 @@ class ImageSerializer(TaggitSerializer, serializers.ModelSerializer):
             'id',
             'file',
             'location',
+            'caption',
             'comments',
             'like_count',
             'creator',
