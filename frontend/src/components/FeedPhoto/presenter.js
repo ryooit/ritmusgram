@@ -26,7 +26,6 @@ const FeedPhoto = (props, context) => {
           number={props.like_count}
           isLiked={props.is_liked}
           photoId={props.id}
-          openLikes={props.openLikes}
         />
         <PhotoComments
           caption={props.caption}
@@ -34,18 +33,13 @@ const FeedPhoto = (props, context) => {
           comments={props.comments}
         />
         <TimeStamp time={props.natural_time} />
-        <CommentBox photoId={props.id} />
+        <CommentBox />
       </div>
     </div>
   );
 };
 
-FeedPhoto.contextTypes = {
-  t: PropTypes.func.isRequired
-};
-
 FeedPhoto.propTypes = {
-  id: PropTypes.number.isRequired,
   creator: PropTypes.shape({
     profile_image: PropTypes.string,
     username: PropTypes.string.isRequired
@@ -56,7 +50,6 @@ FeedPhoto.propTypes = {
   caption: PropTypes.string.isRequired,
   comments: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
       message: PropTypes.string.isRequired,
       creator: PropTypes.shape({
         profile_image: PropTypes.string,
@@ -65,10 +58,7 @@ FeedPhoto.propTypes = {
     })
   ).isRequired,
   natural_time: PropTypes.string.isRequired,
-  is_liked: PropTypes.bool.isRequired,
-  seeingLikes: PropTypes.bool.isRequired,
-  openLikes: PropTypes.func.isRequired,
-  closeLikes: PropTypes.func.isRequired
+  is_liked: PropTypes.bool.isRequired
 };
 
 export default FeedPhoto;
