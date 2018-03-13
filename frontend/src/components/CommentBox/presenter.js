@@ -15,12 +15,15 @@ const CommentBox = (props, context) => (
   </form>
 );
 
-CommentBox.propTypes = {
-  comment: PropTypes.string.isRequired
-};
-
 CommentBox.contextTypes = {
   t: PropTypes.func.isRequired
+};
+
+CommentBox.propTypes = {
+  handleKeyPress: PropTypes.func.isRequired,
+  handleInputChange:PropTypes.func.isRequired,
+  comment: PropTypes.string.isRequired,
+  photoId: PropTypes.number.isRequired
 };
 
 export default CommentBox;
