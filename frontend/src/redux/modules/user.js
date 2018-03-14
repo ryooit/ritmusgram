@@ -4,7 +4,9 @@
 
 const SAVE_TOKEN = "SAVE_TOKEN";
 const LOGOUT = "LOGOUT";
-const SET_USER_LIST= "SET_USER_LIST";
+const SET_PHOTO_LIKES = "SET_PHOTO_LIKES";
+const FOLLOW_USER = "FOLLOW_USER";
+const UNFOLLOW_USER = "UNFOLLOW_USER";
 
 // action creators
 
@@ -21,18 +23,32 @@ function logout() {
   };
 }
 
-function setUserList(userList) {
+function setFollowUser(userId) {
   return {
-    type: SET_USER_LIST,
-    userList
+    type: FOLLOW_USER,
+    userId
   };
 }
 
-// API Actions
+function setUnfollowUser(userId) {
+  return {
+    type: UNFOLLOW_USER,
+    userId
+  };
+}
 
-function facebookLogin(access_token){
-  return function(dispatch) {
-    fetch("users/login/facebook/", {
+function setPhotoLikes(likes) {
+  return {
+    type: SET_PHOTO_LIKES,
+    likes
+  };
+}
+
+// API actions
+
+function facebookLogin(access_token) {
+  return dispatch => {
+    fetch("/users/login/facebook/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -41,18 +57,18 @@ function facebookLogin(access_token){
         access_token
       })
     })
-    .then(response => response.json())
-    .then(json => {
-      if(json.token) {
-        dispatch(saveToken(json.token));
-      }
-    })
-    .catch(err => console.log(err));
+      .then(response => response.json())
+      .then(json => {
+        if (json.token) {
+          dispatch(saveToken(json.token));
+        }
+      })
+      .catch(err => console.log(err));
   };
 }
 
-function usernameLogin(username, password){
-  return function(dispatch){
+function usernameLogin(username, password) {
+  return dispatch => {
     fetch("/rest-auth/login/", {
       method: "POST",
       headers: {
@@ -63,18 +79,18 @@ function usernameLogin(username, password){
         password
       })
     })
-    .then(response => response.json())
-    .then(json => {
-      if(json.token) {
-        dispatch(saveToken(json.token));
-      }
-    })
-    .catch(err => console.log(err));
+      .then(response => response.json())
+      .then(json => {
+        if (json.token) {
+          dispatch(saveToken(json.token));
+        }
+      })
+      .catch(err => console.log(err));
   };
 }
 
-function createAccount(username, password, email, name){
-  return function(dispatch){
+function createAccount(username, password, email, name) {
+  return dispatch => {
     fetch("/rest-auth/registration/", {
       method: "POST",
       headers: {
@@ -88,13 +104,13 @@ function createAccount(username, password, email, name){
         name
       })
     })
-    .then(response => response.json())
-    .then(json => {
-      if(json.token) {
-        dispatch(saveToken(json.token));
-      }
-    })
-    .catch(err => console.log(err));
+      .then(response => response.json())
+      .then(json => {
+        if (json.token) {
+          dispatch(saveToken(json.token));
+        }
+      })
+      .catch(err => console.log(err));
   };
 }
 
@@ -103,20 +119,63 @@ function getPhotoLikes(photoId) {
     const { user: { token } } = getState();
     fetch(`/images/${photoId}/likes/`, {
       headers: {
-        Authorization: `JWT &{token}`
+        Authorization: `JWT ${token}`
+      }
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(logout());
+        }
+        return response.json();
+      })
+      .then(json => {
+        dispatch(setPhotoLikes(json));
+      });
+  };
+}
+
+function followUser(userId) {
+  return (dispatch, getState) => {
+    dispatch(setFollowUser(userId));
+    const { user: { token } } = getState();
+    fetch(`/users/${userId}/follow/`, {
+      method: "POST",
+      headers: {
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
       }
     }).then(response => {
-      if(response.status === 401) {
+      if (response.status === 401) {
         dispatch(logout());
+      } else if (!response.ok) {
+        dispatch(setUnfollowUser(userId));
       }
-      return response.json();
-    }).then(json => {
-        dispatch(setUserList(json));
+    });
+  };
+}
+
+function unfollowUser(userId) {
+  return (dispatch, getState) => {
+    dispatch(setUnfollowUser(userId));
+    const { user: { token } } = getState();
+    fetch(`/users/${userId}/unfollow/`, {
+      method: "POST",
+      headers: {
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
+      }
+    }).then(response => {
+      if (response.status === 401) {
+        dispatch(logout());
+      } else if (!response.ok) {
+        dispatch(setFollowUser(userId));
+      }
     });
   };
 }
 
 // initial state
+
 const initialState = {
   isLoggedIn: localStorage.getItem("jwt") ? true : false,
   token: localStorage.getItem("jwt")
@@ -125,13 +184,17 @@ const initialState = {
 // reducer
 
 function reducer(state = initialState, action) {
-  switch(action.type){
+  switch (action.type) {
     case SAVE_TOKEN:
       return applySetToken(state, action);
     case LOGOUT:
       return applyLogout(state, action);
-    case SET_USER_LIST:
-      return applySetUserList(state, action);
+    case SET_PHOTO_LIKES:
+      return applyPhotoLikes(state, action);
+    case FOLLOW_USER:
+      return applyFollowUser(state, action);
+    case UNFOLLOW_USER:
+      return applyUnfollowUser(state, action);
     default:
       return state;
   }
@@ -139,29 +202,56 @@ function reducer(state = initialState, action) {
 
 // reducer functions
 
-function applySetToken(state, action){
+function applySetToken(state, action) {
   const { token } = action;
   localStorage.setItem("jwt", token);
   return {
     ...state,
-    isLoggedIn:true,
-    token
+    isLoggedIn: true,
+    token: token
   };
 }
 
-function applyLogout(state, action){
+function applyLogout(state, action) {
   localStorage.removeItem("jwt");
   return {
     isLoggedIn: false
   };
 }
 
-function applySetUserList(state, action){
-  const { userList } =action;
+function applyPhotoLikes(state, action) {
+  const { likes } = action;
   return {
     ...state,
-    userList
+    userList: likes
   };
+}
+
+function applyFollowUser(state, action) {
+  const { userId } = action;
+  const { userList } = state;
+  const updatedUserList = userList.map(user => {
+    if (user.id === userId) {
+      return { ...user, following: true };
+    }
+    return user;
+  });
+  return {
+    ...state,
+    userList: updatedUserList
+  };
+}
+
+function applyUnfollowUser(state, action) {
+  const { userId } = action;
+  const { userList } = state;
+  const updatedUserList = userList.map(user => {
+    if (user.id === userId) {
+      return { ...user, following: false };
+    }
+    return user;
+  });
+  return { ...state, userList: updatedUserList };
 }
 
 // exports
@@ -171,11 +261,13 @@ const actionCreators = {
   usernameLogin,
   createAccount,
   logout,
-  getPhotoLikes
+  getPhotoLikes,
+  followUser,
+  unfollowUser
 };
 
 export { actionCreators };
 
-// reducer export
+// export reducer by default
 
 export default reducer;

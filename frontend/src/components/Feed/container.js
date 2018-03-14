@@ -7,16 +7,17 @@ class Container extends Component {
     loading: true
   };
   static propTypes = {
-    getFeed: PropTypes.func.isRequired
+    getFeed: PropTypes.func.isRequired,
+    feed: PropTypes.array
   };
   componentDidMount() {
     const { getFeed } = this.props;
-    if(!this.props.feed){
+    if (!this.props.feed) {
       getFeed();
     } else {
       this.setState({
         loading: false
-      })
+      });
     }
   }
   componentWillReceiveProps = nextProps => {
@@ -26,9 +27,9 @@ class Container extends Component {
       });
     }
   };
-  render(){
+  render() {
     const { feed } = this.props;
-    return <Feed {...this.state} feed={feed}/>
+    return <Feed {...this.state} feed={feed} />;
   }
 }
 

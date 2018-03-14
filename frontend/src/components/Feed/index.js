@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
-import Container from "./container";
 import { actionCreators as photoActions } from "redux/modules/photos";
+import Container from "./container";
 
 const mapStateToProps = (state, ownProps) => {
-  const { photos : { feed } } = state;
+  const { photos: { feed } } = state;
   return {
     feed
   };

@@ -1,4 +1,4 @@
-import React, { Component }from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import LoginForm from "./presenter";
 
@@ -17,14 +17,14 @@ class Container extends Component {
       <LoginForm
         handleInputChange={this._handleInputChange}
         handleSubmit={this._handleSubmit}
-        handleFacebookLogin={this._handleFacebookLogin}
         usernameValue={username}
         passwordValue={password}
+        handleFacebookLogin={this._handleFacebookLogin}
       />
     );
   }
   _handleInputChange = event => {
-    const { target : { value, name } } = event;
+    const { target: { value, name } } = event;
     this.setState({
       [name]: value
     });
@@ -33,7 +33,7 @@ class Container extends Component {
     const { usernameLogin } = this.props;
     const { username, password } = this.state;
     event.preventDefault();
-    usernameLogin(username,password);
+    usernameLogin(username, password);
   };
   _handleFacebookLogin = response => {
     const { facebookLogin } = this.props;

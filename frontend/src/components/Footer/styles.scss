@@ -1,6 +1,6 @@
 .footer {
   max-width: $max-page-width;
-  width: 95%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -11,6 +11,8 @@
   flex-wrap: wrap;
   @include breakpoint("phone-tablet") {
     justify-content: center;
+    max-width: 350px;
+    margin-bottom: 25px;
   }
   .column {
     @include breakpoint("phone-tablet") {

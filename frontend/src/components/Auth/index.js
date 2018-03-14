@@ -1,11 +1,11 @@
 import { connect } from "react-redux";
 import Container from "./container";
 
-// Add all the action for:
-// Log In
-// Sign Up
-// Recover password
-// Check
+// Add all the actions for:
+// Log in
+// Sign up
+// Recover Password
+// Check username
 // Check password
 
 export default connect()(Container);

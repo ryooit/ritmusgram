@@ -17,13 +17,13 @@ class Container extends Component {
     const { email, name, username, password } = this.state;
     return (
       <SignupForm
-        handleInputChange={this._handleInputChange}
-        handleSubmit={this._handleSubmit}
-        handleFacebookLogin={this._handleFacebookLogin}
         emailValue={email}
         nameValue={name}
         usernameValue={username}
         passwordValue={password}
+        handleInputChange={this._handleInputChange}
+        handleSubmit={this._handleSubmit}
+        handleFacebookLogin={this._handleFacebookLogin}
       />
     );
   }
@@ -34,11 +34,11 @@ class Container extends Component {
     });
   };
   _handleSubmit = event => {
-    const { createAccount } = this.props;
     const { username, password, email, name } = this.state;
+    const { createAccount } = this.props;
     event.preventDefault();
     createAccount(username, password, email, name);
-  }
+  };
   _handleFacebookLogin = response => {
     const { facebookLogin } = this.props;
     facebookLogin(response.accessToken);
