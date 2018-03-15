@@ -5,20 +5,21 @@ import Navigation from "./presenter";
 class Container extends Component {
   state = {
     term: ""
-  }
+  };
   static propTypes = {
     goToSearch: PropTypes.func.isRequired
   };
   render() {
+    const { term } = this.state;
     return (
       <Navigation
         onSubmit={this._onSubmit}
         onInputChange={this._onInputChange}
-        value={this.state.term}
+        value={term}
       />
     );
   }
-  _onInputChange = (event)=> {
+  _onInputChange = event => {
     const { target: { value } } = event;
     this.setState({
       term: value
